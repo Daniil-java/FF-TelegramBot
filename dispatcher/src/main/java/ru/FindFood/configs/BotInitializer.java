@@ -1,5 +1,6 @@
 package ru.FindFood.configs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -10,6 +11,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.FindFood.controllers.TelegramBot;
 
 @Component
+@Slf4j
 public class BotInitializer {
     private final TelegramBot telegramBot;
 
@@ -24,7 +26,7 @@ public class BotInitializer {
         try{
             telegramBotsApi.registerBot(telegramBot);
         } catch (TelegramApiException e){
-
+            log.error(e.getMessage());
         }
     }
 }
