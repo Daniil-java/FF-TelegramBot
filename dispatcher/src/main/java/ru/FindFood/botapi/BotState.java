@@ -1,5 +1,5 @@
 package ru.FindFood.botapi;
 
 public enum BotState {
-    START_END, START
+    START_END, GET_MENU, START
 }

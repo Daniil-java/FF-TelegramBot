@@ -9,31 +9,30 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import reactor.netty.http.client.HttpClient;
-import ru.FindFood.dtos.MenuDto;
 import ru.FindFood.properties.ServiceIntegrationProperties;
 
 import java.util.concurrent.TimeUnit;
-
 
 @Component
 @RequiredArgsConstructor
 @EnableConfigurationProperties(
         {ServiceIntegrationProperties.class}
 )
-public class MenuServiceIntegration {
+public class AuthServiceIntegration {
     private WebClient webClient;
 
     private final ServiceIntegrationProperties sip;
 
-    @Value("${integrations.menu-service.url}")
-    private String menuServiceUrl;
+    @Value("${integrations.auth-service.url}")
+    private String authServiceUrl;
 
-    public MenuDto getMenuByTelegramName(String username) {
+    public Boolean getAuthByTelegramName(Update update) {
         return getWebClient().get()
-                .uri("/api/v1/menus/all?telegramName=" + username)
+                .uri("/api/v1/" + update.getMessage().getFrom().getUserName())
                 .retrieve()
-                .bodyToMono(MenuDto.class)
+                .bodyToMono(Boolean.class)
                 .block();
     }
 
@@ -44,7 +43,7 @@ public class MenuServiceIntegration {
                     .doOnConnected(connection -> connection.addHandlerLast(new ReadTimeoutHandler(sip.getReadTimeout(), TimeUnit.MILLISECONDS))
                             .addHandlerLast(new WriteTimeoutHandler(sip.getWriteTimeout(), TimeUnit.MILLISECONDS)));
             webClient = WebClient.builder()
-                    .baseUrl(menuServiceUrl)
+                    .baseUrl(authServiceUrl)
                     .clientConnector(new ReactorClientHttpConnector(httpClient))
                     .build();
         }

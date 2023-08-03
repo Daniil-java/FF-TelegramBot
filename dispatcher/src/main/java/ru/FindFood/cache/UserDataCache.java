@@ -1,8 +1,5 @@
 package ru.FindFood.cache;
 
-
-import jakarta.persistence.EntityManagerFactory;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,10 +25,10 @@ public class UserDataCache implements DataCache {    //Прослойка меж
     @Override
     public BotState getUsersCurrentBotState(Long userId) {
         BotState botState = usersBotStates.get(userId);
-        log.debug(botState.toString());
         if (Objects.isNull(botState)) {
             botState = BotState.START;
         }
+        log.debug(botState.toString());
 
         return botState;
     }
