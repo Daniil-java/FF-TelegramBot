@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.FindFood.botapi.BotState;
@@ -21,13 +20,6 @@ public class BotService {
     public SendMessage handleUpdate(Update update) {
         log.debug("BotService.handleUpdate()");
         SendMessage replyMessage = null;
-
-//        if (update.hasCallbackQuery()) {                                //Проверка наличия ответа от клавиатуры
-//            CallbackQuery callbackQuery = update.getCallbackQuery();
-//            log.info("New callbackQuery from User: {}, userId: {}, with data: {}", update.getCallbackQuery().getFrom().getUserName(),
-//                    callbackQuery.getFrom().getId(), update.getCallbackQuery().getData());
-//            return processCallbackQuery(callbackQuery);
-//        }
 
         Message message = update.getMessage();
 
@@ -50,6 +42,9 @@ public class BotService {
             case "/start":
                 botState = BotState.START;
                 break;
+            case "/menu":
+                botState = BotState.GET_MENU;
+                break;
             default:
                 botState = userDataCache.getUsersCurrentBotState(userId); //Отправляет пользователя на регистрацию
                 break;
@@ -61,27 +56,4 @@ public class BotService {
         return replyMessage;
     }
 
-//    private SendMessage processCallbackQuery(CallbackQuery buttonQuery) {
-//        final long chatId = buttonQuery.getMessage().getChatId();
-//        final var userId = buttonQuery.getFrom().getId();
-//        BotState botState;
-//        SendMessage replyMessage;
-//
-//        switch (buttonQuery.getData()) {
-//            case "buttonEatYes":
-//                botState = BotState.EAT_YESANSWER;
-//                break;
-//            case "buttonEatNo":
-//                botState = BotState.EAT_NOANSWER;
-//                break;
-//            default:
-//                botState = userDataCache.getUsersCurrentBotState(userId);
-//                break;
-//        }
-//
-//        userDataCache.setUsersCurrentBotState(chatId, botState);
-//        replyMessage = botStateContext.processInputMessage(botState, buttonQuery.getMessage());
-//
-//        return replyMessage;
-//    }
 }
